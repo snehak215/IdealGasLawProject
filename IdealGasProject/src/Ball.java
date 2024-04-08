@@ -1,6 +1,5 @@
 
 
-
 import mickel.anim.Sprite;
 import mickel.io.Key;
 
@@ -200,11 +199,7 @@ public class Ball extends Sprite
 			//g.fillRect(myRightButton.x - width / 2, myRightButton.y - thick / 2, width, thick); 	}	
 		// Color Value
 		//BouncingBallsGUI.drawText(g, "Blue", 150, 400, Color.BLUE, 25, true);
-
-		
-		
-
-	}
+}
 
 
 	/** Gets the boundaries of this Sprite.
