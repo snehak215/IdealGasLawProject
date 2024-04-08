@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 
 import mickel.io.Key;
