@@ -35,6 +35,11 @@ public class Controller extends Sprite
 	private boolean myLeftIsPressed;	// State of user clicking left button
 	private boolean myRightIsPressed;	// State of user clicking right button
 
+	private boolean isIsoVolumetric;	// State of user clicking left button
+	private boolean isIsobaric;	// State of user clicking right button
+
+	
+	
 	private int myShade;			// Magnitude of this channel (0 - 255)
 	private Color myHue;				// RGBA.RED, RGBA.GREEN, RGBA.BLUE,
 									// or RBGA.ALPHA
@@ -142,6 +147,23 @@ public class Controller extends Sprite
 
 		return false;	// TODO: Replace this with the appropriate implementation.
 	}
+	private boolean isOverIsoVolumetric(int x, int y) {
+		if (x < 155 && x > 50) {
+			if (y >320 && y< 370) {
+				return true;
+			}
+		}	
+		return false;
+	}
+	private boolean isOverIsobaric(int x, int y) {
+		if (x < 200 && x > 155) {
+			if (y >320 && y< 370) {
+				return true;
+			}
+		}	
+		return false;
+	}
+
 
 	/** Event handler that responds to the pressing down of the mouse button.
 	 *  Whenever the user presses the mouse button, this Controller object
@@ -176,6 +198,12 @@ public class Controller extends Sprite
 		if (isOverLeftButton(x, y)) {
 			myLeftIsPressed = true;
 		} 
+		if (isOverIsoVolumetric(x,y)) {
+			isIsoVolumetric = true;
+		}
+		if (isOverIsobaric(x,y)) {
+			isIsobaric = true;
+		}
 	}
 
 	/** Event handler that responds to the releasing of the mouse button.
@@ -237,10 +265,14 @@ public class Controller extends Sprite
 			myShade += STEP;
 			changed = true;
 		}
-		
+		if (isIsoVolumetric) {
+			BouncingBallsGUI.process = "isovolumetric";
+		}
+		if (isIsobaric) {
+			BouncingBallsGUI.process = "isobaric";
+		}
 
-	}
-	
+	} 
 	public boolean changed() {
 		return changed;
 		
@@ -302,6 +334,7 @@ public class Controller extends Sprite
 	 *
 	 * @param g		The "canvas" on which to draw this Swatch
 	 */
+	
 	public void draw(Graphics2D g)
 	{
 		//dealing with changes
@@ -309,6 +342,20 @@ public class Controller extends Sprite
 			BouncingBallsGUI.updateVars();
 			changed = false;
 		} 
+		BouncingBallsGUI.drawText(g, "isovolumetric or ", 50, 340,
+                Color.WHITE, 13, false);
+		BouncingBallsGUI.drawText(g, "isobaric (note: this is a 1-way toggle)", 155, 340,
+                Color.WHITE, 13, false);
+		
+		if (BouncingBallsGUI.process.equals("isovolumetric")) {
+			BouncingBallsGUI.drawText(g, BouncingBallsGUI.process, 50, 340,
+	                Color.GREEN, 13, false);
+		}
+		else if (BouncingBallsGUI.process.equals("isobaric")) {
+			BouncingBallsGUI.drawText(g, BouncingBallsGUI.process, 155, 340,
+	                Color.GREEN, 13, false);
+		}
+		
 		// Color Channel Label
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial", Font.BOLD, mySize * 2 / 15));
