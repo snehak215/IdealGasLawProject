@@ -1,6 +1,5 @@
 
 
-
 import mickel.anim.Stage;
 import mickel.image.ImageFile;
 
@@ -26,7 +25,7 @@ public class BouncingBallsGUI
 	public static Controller volControl;		// Palette for the BLUE channel
 	public static Controller pressureControl;		// Palette for the BLUE channel
 	public static Controller molesControl;		// Palette for the BLUE channel
-
+	public static String process;
 	public static ArrayList<Ball> balls;
 
 
@@ -66,6 +65,7 @@ public class BouncingBallsGUI
 		myStage.setLocation(300/2, 300/2);
 		this.moles = 100;
 		this.temp = 50;
+		process = "isovolumetric";
 		balls = new ArrayList<Ball>();
 		int vx;
 		int vy;
@@ -121,6 +121,7 @@ public class BouncingBallsGUI
 	}
 	public static void updateVars() {
 		if (molesControl.changed()) {
+			pressureControl.setShade((int)(tempControl.getShade()*8.314*molesControl.getShade()/volControl.getShade()));
 			if ((molesControl.getShade()-balls.size()) > 0) {
 				for (int i = 0; i < (molesControl.getShade()-balls.size()); i++){						
 					System.out.print("hi");
@@ -134,15 +135,14 @@ public class BouncingBallsGUI
 					myStage.add(addedBall);
 				}	
 			}
-			else {
+			else {//fix later
 				for (int i = 0; i < -1*(molesControl.getShade()-balls.size()); i++){						
 					balls.remove(balls.size()-1);
 		 			//myStage.remove(myStage.countComponents()-1);
 				}
 			}
-			
 		}
-		if (tempControl.changed()) {
+		if (tempControl.changed() && process.equals("isovolumetric")) {
 			int oldPressure = (int)pressureControl.getShade();
 			pressureControl.setShade((int)(tempControl.getShade()*8.314*molesControl.getShade()/volControl.getShade()));
 			int vx;
@@ -152,15 +152,22 @@ public class BouncingBallsGUI
 				vy = (int)(Math.random() * tempControl.getShade()/20)+1;
 				balls.get(i).setVelocityX(vx);
 				balls.get(i).setVelocityY(vy);
-				/*int oldVX = (int) balls.get(i).velocityX();
-				int oldVY = (int) balls.get(i).velocityY();
-				int newVX = (int)(pressureControl.getShade()/oldPressure*(oldVY));
-				int newVY = (int)(pressureControl.getShade()/oldPressure*(oldVY));
-				if (newVX == 0) {newVX++;}
-				if (newVY == 0) {newVY++;}
-				balls.get(i).setVelocityX(newVX);
-				balls.get(i).setVelocityY(newVY);*/
 			} 
+		}
+		if (tempControl.changed() && process.equals("isobaric")) {
+			volControl.setShade((int)(tempControl.getShade()*8.314*molesControl.getShade()/pressureControl.getShade()));
+			for (Ball ball : balls) 
+			{
+				ball.setBounds(volControl.getShade()+10);
+			} 
+			int vx;
+			int vy;
+			for (int i = 0; i <balls.size();i++) {
+				vx = (int)(Math.random() * tempControl.getShade()/20)+1;
+				vy = (int)(Math.random() * tempControl.getShade()/20)+1;
+				balls.get(i).setVelocityX(vx);
+				balls.get(i).setVelocityY(vy);
+			}
 		}
 		if (pressureControl.changed()) {
 			int oldTemp = (int)tempControl.getShade();
@@ -172,7 +179,6 @@ public class BouncingBallsGUI
 				vy = (int)(Math.random() * tempControl.getShade()/20)+1;
 				balls.get(i).setVelocityX(vx);
 				balls.get(i).setVelocityY(vy);
-				
 				/*int oldVX = (int) balls.get(i).velocityX();
 				int oldVY = (int) balls.get(i).velocityY();
 				int newVX = (int)(tempControl.getShade()/oldTemp*(oldVY));
@@ -188,8 +194,7 @@ public class BouncingBallsGUI
 			for (Ball ball : balls) 
 			{
 				ball.setBounds(volControl.getShade()+10);
-			}
-			
+			} 
 		} 
 		if (molesControl.changed()) {
 			pressureControl.setShade((int)(tempControl.getShade()*8.314*molesControl.getShade()/volControl.getShade()));
@@ -249,4 +254,3 @@ public class BouncingBallsGUI
 	}
 
 }
-
